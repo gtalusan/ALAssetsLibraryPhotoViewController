@@ -1,3 +1,5 @@
 A simple implementation for ALAssetsLibrary and EGOPhotoViewController (http://github.com/enormego/PhotoViewer).
 
 Currently EGOPhotoViewController doesn't expire photo.image.  The ALAssetsLibraryPhotSource can do this work, but I'm lazy.
+
+Note that this implementation is ARCified, but EGOPhotoViewController will be compiled with -fno-objc-arc.
