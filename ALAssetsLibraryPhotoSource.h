@@ -1,7 +1,7 @@
 #import <UIKit/UIKit.h>
 #import "EGOPhotoSource.h"
 
-@interface ALAssetsLibraryPhotoSource : NSObject <EGOPhotoSource>
+@interface ALAssetsLibraryPhotoSource : NSObject <EGOPhotoSource, NSCacheDelegate>
 {
 	NSArray *_photos;
 }

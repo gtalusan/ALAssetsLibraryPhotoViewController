@@ -9,8 +9,9 @@
 {
 	self = [super init];
 	self.cache = [NSCache new];
-	[self.cache setCountLimit:4];
-	
+	self.cache.delegate = self;
+	self.cache.countLimit = 4;
+
 	NSMutableArray *photos = [NSMutableArray new];
 	for (ALAsset *asset in assets) {
 		ALAssetsLibraryPhoto *photo = [ALAssetsLibraryPhoto new];
@@ -25,14 +26,10 @@
 {
 	ALAssetsLibraryPhoto *photo = [self.photos objectAtIndex:index];
 	if (photo.image == nil) {
-		id o = [cache objectForKey:photo];
-		if (o == nil) {
-			ALAssetRepresentation *representation = photo.asset.defaultRepresentation;
-			CGImageRef imageRef = representation.fullScreenImage;
-			o = [UIImage imageWithCGImage:imageRef scale:representation.scale orientation:(UIImageOrientation) representation.orientation];
-			[cache setObject:o forKey:photo];
-		}
-		photo.image = o;
+		ALAssetRepresentation *representation = photo.asset.defaultRepresentation;
+		CGImageRef imageRef = representation.fullScreenImage;
+		photo.image = [UIImage imageWithCGImage:imageRef scale:representation.scale orientation:(UIImageOrientation) [photo.asset valueForProperty:@"ALAssetPropertyOrientation"]];
+		[cache setObject:photo forKey:[NSNumber numberWithInt:index]];
 	}
 	return photo;
 }
@@ -45,6 +42,12 @@
 - (NSInteger)numberOfPhotos
 {
 	return [self.photos count];
+}
+
+- (void)cache:(NSCache *)cache willEvictObject:(id)obj
+{
+	ALAssetsLibraryPhoto *photo = obj;
+	photo.image = nil;
 }
 
 @end
